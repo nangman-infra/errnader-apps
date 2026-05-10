@@ -12,6 +12,7 @@ function App() {
         <p className="text-gray-500">
           {isInWebView ? '📱 네이티브 앱 내에서 실행 중' : '🌐 브라우저에서 실행 중'}
         </p>
+        <p className="text-xs text-gray-300">dev</p>
       </main>
     </div>
   );
