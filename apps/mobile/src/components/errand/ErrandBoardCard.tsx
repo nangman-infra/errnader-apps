@@ -79,14 +79,15 @@ export function ErrandBoardCard({ errand, onPress }: ErrandBoardCardProps) {
         </Text>
       ) : null}
 
-      {/* 수락 버튼 */}
+      {/* 상세정보 버튼 */}
       <View style={{ marginTop: 14, flexDirection: 'row', justifyContent: 'flex-end' }}>
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.8}
-          style={{ paddingHorizontal: 18, paddingVertical: 8, borderRadius: 12, backgroundColor: '#F97316' }}
+          style={{ paddingHorizontal: 18, paddingVertical: 8, borderRadius: 12, backgroundColor: '#FFF7ED', borderWidth: 1, borderColor: '#FED7AA', flexDirection: 'row', alignItems: 'center', gap: 4 }}
         >
-          <Text style={{ fontSize: 13, fontWeight: '700', color: 'white' }}>수락하기</Text>
+          <Ionicons name="document-text-outline" size={13} color="#F97316" />
+          <Text style={{ fontSize: 13, fontWeight: '700', color: '#F97316' }}>상세정보</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

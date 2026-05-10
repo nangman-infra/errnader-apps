@@ -4,6 +4,7 @@ import { Inquiry } from '../types/inquiry';
 interface CreateInquiryPayload {
   title: string;
   content: string;
+  photoUrls?: string[];
 }
 
 interface CreateInquiryResponse {

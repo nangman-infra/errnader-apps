@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useTotalUnread } from '../../src/hooks/useChatRooms';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -17,6 +18,7 @@ function TabIcon({ name, focusedName, color, focused }: TabIconProps) {
 
 export default function TabLayout() {
   const { t } = useTranslation();
+  const totalUnread = useTotalUnread();
 
   return (
     <Tabs
@@ -63,6 +65,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabIcon name="chatbubble-outline" focusedName="chatbubble" color={color} focused={focused} />
           ),
+          tabBarBadge: totalUnread > 0 ? totalUnread : undefined,
+          tabBarBadgeStyle: { backgroundColor: '#EF4444', fontSize: 10 },
         }}
       />
       <Tabs.Screen

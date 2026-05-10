@@ -18,6 +18,12 @@ import { refreshTokens } from '../src/api/auth';
 import { apiClient } from '../src/api/client';
 import { loadSavedLanguage } from '../src/i18n';
 import i18n from '../src/i18n';
+import { useChatWebSocket } from '../src/hooks/useChatWebSocket';
+
+function AppWebSocket() {
+  useChatWebSocket();
+  return null;
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +71,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <StatusBar style="auto" />
+      <AppWebSocket />
       <Stack screenOptions={{ headerShown: false }} />
     </QueryClientProvider>
   );

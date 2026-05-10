@@ -14,8 +14,8 @@ export function useInquiries() {
 export function useCreateInquiry() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ title, content }: { title: string; content: string }) =>
-      createInquiry({ title, content }),
+    mutationFn: ({ title, content, photoUrls }: { title: string; content: string; photoUrls?: string[] }) =>
+      createInquiry({ title, content, photoUrls }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inquiries'] });
     },

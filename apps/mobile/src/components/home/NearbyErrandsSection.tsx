@@ -59,7 +59,11 @@ export function NearbyErrandsSection() {
         </View>
       ) : (
         filtered.map(errand => (
-          <ErrandBoardCard key={errand.errandId} errand={errand} />
+          <ErrandBoardCard
+            key={errand.errandId}
+            errand={errand}
+            onPress={() => router.push(`/errand/${errand.errandId}`)}
+          />
         ))
       )}
     </View>

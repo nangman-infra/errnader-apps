@@ -7,6 +7,7 @@ export interface Inquiry {
   content: string;
   status: 'pending' | 'answered';
   answer: string | null;
+  photoUrls?: string[];
   createdAt: string;
   updatedAt: string;
 }

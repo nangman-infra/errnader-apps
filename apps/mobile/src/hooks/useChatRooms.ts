@@ -36,10 +36,16 @@ async function fetchChatRooms(): Promise<ChatRoom[]> {
   }));
 }
 
-// WebSocket 연동 시 React Query cache를 직접 업데이트하면 됩니다
 export function useChatRooms() {
   return useQuery({
     queryKey: ['chatRooms'],
     queryFn: fetchChatRooms,
+    refetchInterval: 60000,
+    staleTime: 0,
   });
+}
+
+export function useTotalUnread(): number {
+  const { data: chatRooms = [] } = useChatRooms();
+  return chatRooms.reduce((sum, r) => sum + (r.unreadCount ?? 0), 0);
 }

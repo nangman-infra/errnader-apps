@@ -1,5 +1,6 @@
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { useChatRooms } from '../../hooks/useChatRooms';
 import { ChatRoom } from '../../types/chat';
 
@@ -81,9 +82,7 @@ function ChatRoomItem({ room }: { room: ChatRoom }) {
         paddingVertical: 16,
         gap: 14,
       }}
-      onPress={() => {
-        // TODO: 채팅방 상세 화면으로 이동
-      }}
+      onPress={() => router.push(`/chat/${room.id}`)}
     >
       {/* 아바타 */}
       <View

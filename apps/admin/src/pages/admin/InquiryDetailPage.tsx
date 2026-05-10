@@ -73,6 +73,23 @@ export function InquiryDetailPage() {
           <h2 className="text-lg font-bold text-gray-900 mb-3">{inquiry.title}</h2>
           <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{inquiry.content}</p>
 
+          {inquiry.photoUrls && inquiry.photoUrls.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <p className="text-xs font-semibold text-gray-500 mb-2">첨부 사진 ({inquiry.photoUrls.length}장)</p>
+              <div className="flex flex-wrap gap-2">
+                {inquiry.photoUrls.map((url, i) => (
+                  <a key={i} href={url} target="_blank" rel="noreferrer">
+                    <img
+                      src={url}
+                      alt={`첨부 사진 ${i + 1}`}
+                      className="w-24 h-24 object-cover rounded-xl border border-gray-100 hover:opacity-80 transition-opacity"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mt-4 pt-4 border-t border-gray-100">
             <p className="text-xs text-gray-400 font-mono">userId: {inquiry.userId}</p>
           </div>

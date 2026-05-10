@@ -120,8 +120,9 @@ export function ErrandDetailScreen() {
     );
   }
 
-  const showAcceptBtn = isErrander && errand.status === 'PENDING';
+  const showAcceptBtn = !isErrander && errand.status === 'PENDING';
   const showCancelBtn = !isErrander && errand.status === 'PENDING';
+  const showChatBtn = isErrander;
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: '#FFF9F4' }}>
@@ -200,8 +201,8 @@ export function ErrandDetailScreen() {
       </ScrollView>
 
       {/* 하단 버튼 */}
-      {(showAcceptBtn || showCancelBtn) && (
-        <View style={{ paddingHorizontal: 24, paddingBottom: 24, paddingTop: 12, backgroundColor: '#FFF9F4' }}>
+      {(showAcceptBtn || showCancelBtn || showChatBtn) && (
+        <View style={{ paddingHorizontal: 24, paddingBottom: 24, paddingTop: 12, gap: 10, backgroundColor: '#FFF9F4' }}>
           {showAcceptBtn && (
             <TouchableOpacity
               onPress={handleAccept}
@@ -209,6 +210,16 @@ export function ErrandDetailScreen() {
               style={{ backgroundColor: '#F97316', paddingVertical: 16, borderRadius: 18, alignItems: 'center' }}
             >
               <Text style={{ fontSize: 16, fontWeight: '700', color: 'white' }}>수락하기</Text>
+            </TouchableOpacity>
+          )}
+          {showChatBtn && (
+            <TouchableOpacity
+              onPress={() => router.push(`/chat/${errand.errandId}`)}
+              activeOpacity={0.85}
+              style={{ backgroundColor: 'white', paddingVertical: 16, borderRadius: 18, alignItems: 'center', borderWidth: 1.5, borderColor: '#F97316', flexDirection: 'row', justifyContent: 'center', gap: 8 }}
+            >
+              <Ionicons name="chatbubble-outline" size={18} color="#F97316" />
+              <Text style={{ fontSize: 16, fontWeight: '700', color: '#F97316' }}>여행자에게 채팅하기</Text>
             </TouchableOpacity>
           )}
           {showCancelBtn && (

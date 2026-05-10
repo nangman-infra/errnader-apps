@@ -7,6 +7,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActionSheetIOS,
   Modal,
   Image,
   ActivityIndicator,
@@ -94,8 +95,10 @@ export function ErrandRequestScreen() {
           photoUrls,
         });
         router.replace('/(tabs)');
-      } catch {
-        Alert.alert('오류', '심부름 등록에 실패했어요. 다시 시도해주세요.');
+      } catch (err: any) {
+        const msg = err?.response?.data?.message ?? err?.message ?? String(err);
+        console.log('[errand] 등록 실패:', err?.response?.status, msg);
+        Alert.alert('오류', `심부름 등록 실패: ${msg}`);
       }
     }
   };
@@ -242,42 +245,67 @@ function Step1What({
   photos: PhotoItem[];
   onPhotosChange: (photos: PhotoItem[]) => void;
 }) {
-  const [sourceModalVisible, setSourceModalVisible] = useState(false);
+  // Android 전용 — iOS는 ActionSheetIOS 사용
+  const [androidModalVisible, setAndroidModalVisible] = useState(false);
 
   const pickAndUpload = async (source: 'camera' | 'library') => {
-    setSourceModalVisible(false);
-    const hasPermission = await requestMediaPermission(source);
-    if (!hasPermission) {
-      Alert.alert('권한 필요', '사진 접근 권한이 필요해요.');
+    try {
+      const hasPermission = await requestMediaPermission(source);
+      if (!hasPermission) {
+        Alert.alert(
+          '권한 필요',
+          source === 'camera'
+            ? '카메라 권한이 필요해요. 설정 > errander에서 허용해주세요.'
+            : '사진 접근 권한이 필요해요. 설정 > errander에서 허용해주세요.',
+        );
+        return;
+      }
+      const result = source === 'camera'
+        ? await ImagePicker.launchCameraAsync({ mediaTypes: 'images' as any, quality: 0.85 })
+        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'images' as any, quality: 0.85, allowsMultipleSelection: false });
+
+      if (result.canceled || !result.assets?.[0]) return;
+
+      const localUri = result.assets[0].uri;
+      const newItem: PhotoItem = {
+        id: `${Date.now()}`,
+        localUri,
+        publicUrl: null,
+        isUploading: true,
+      };
+      const withNew = [...photos, newItem];
+      onPhotosChange(withNew);
+
+      const publicUrl = await uploadPhotoToS3(localUri);
+      if (!publicUrl) {
+        Alert.alert('업로드 실패', '사진 업로드에 실패했어요. 다시 시도해주세요.');
+        onPhotosChange(withNew.filter(p => p.id !== newItem.id));
+      } else {
+        onPhotosChange(withNew.map(p =>
+          p.id === newItem.id ? { ...p, isUploading: false, publicUrl } : p
+        ));
+      }
+    } catch (err) {
+      Alert.alert('오류', `사진 오류: ${String(err)}`);
+    }
+  };
+
+  const openSourceOptions = () => {
+    if (photos.length >= MAX_PHOTOS) {
+      Alert.alert('최대 5장', '사진은 최대 5장까지 첨부할 수 있어요.');
       return;
     }
-
-    const result = source === 'camera'
-      ? await ImagePicker.launchCameraAsync({ mediaTypes: 'images', quality: 0.85 })
-      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'images', quality: 0.85, allowsMultipleSelection: false });
-
-    if (result.canceled || !result.assets?.[0]) return;
-
-    const localUri = result.assets[0].uri;
-    const newItem: PhotoItem = {
-      id: `${Date.now()}`,
-      localUri,
-      publicUrl: null,
-      isUploading: true,
-    };
-
-    const withNew = [...photos, newItem];
-    onPhotosChange(withNew);
-
-    const publicUrl = await uploadPhotoToS3(localUri);
-
-    if (!publicUrl) {
-      Alert.alert('업로드 실패', '사진 업로드에 실패했어요. 다시 시도해주세요.');
-      onPhotosChange(withNew.filter(p => p.id !== newItem.id));
+    if (Platform.OS === 'ios') {
+      // iOS: 네이티브 ActionSheet — Modal 전환 충돌 없음
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: ['취소', '즉시 촬영', '앨범에서 선택'], cancelButtonIndex: 0 },
+        (buttonIndex) => {
+          if (buttonIndex === 1) pickAndUpload('camera');
+          else if (buttonIndex === 2) pickAndUpload('library');
+        },
+      );
     } else {
-      onPhotosChange(withNew.map(p =>
-        p.id === newItem.id ? { ...p, isUploading: false, publicUrl } : p
-      ));
+      setAndroidModalVisible(true);
     }
   };
 
@@ -317,13 +345,7 @@ function Step1What({
         )}
 
         <TouchableOpacity
-          onPress={() => {
-            if (photos.length >= MAX_PHOTOS) {
-              Alert.alert('최대 5장', '사진은 최대 5장까지 첨부할 수 있어요.');
-              return;
-            }
-            setSourceModalVisible(true);
-          }}
+          onPress={openSourceOptions}
           activeOpacity={0.75}
           style={{
             marginTop: 12,
@@ -346,10 +368,15 @@ function Step1What({
         </TouchableOpacity>
       </View>
 
+      {/* Android 전용 소스 선택 모달 */}
       <PhotoSourceModal
-        visible={sourceModalVisible}
-        onClose={() => setSourceModalVisible(false)}
-        onSelect={pickAndUpload}
+        visible={androidModalVisible}
+        onClose={() => setAndroidModalVisible(false)}
+        onSelect={async (source) => {
+          setAndroidModalVisible(false);
+          await new Promise(r => setTimeout(r, 400));
+          pickAndUpload(source);
+        }}
       />
     </View>
   );
