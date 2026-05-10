@@ -1,0 +1,102 @@
+{
+  "common": {
+    "cancel": "キャンセル",
+    "confirm": "確認",
+    "save": "保存",
+    "error": "エラー",
+    "loading": "...",
+    "optional": "(任意)",
+    "required_photo_permission": "写真へのアクセス許可が必要です。",
+    "permission_required": "許可が必要",
+    "upload_failed": "アップロード失敗",
+    "photo_upload_failed": "写真のアップロードに失敗しました。",
+    "photo_upload_failed_retry": "写真のアップロードに失敗しました。もう一度お試しください。",
+    "profile_save_failed": "プロフィールの保存に失敗しました。",
+    "profile_save_failed_retry": "プロフィールの保存に失敗しました。もう一度お試しください。"
+  },
+  "tabs": {
+    "home": "ホーム",
+    "errander": "おつかい屋",
+    "chat": "チャット",
+    "my": "マイ"
+  },
+  "start": {
+    "tagline": "韓国旅行を、\n地元のおつかい屋がサポート。",
+    "description": "予約・送迎・通訳、旅行中のことは\n私たちにお任せください。",
+    "get_started": "始める",
+    "already_have_account": "すでにアカウントを持っています"
+  },
+  "home": {
+    "greeting": "こんにちは、",
+    "wave": "👋",
+    "errander_section": "近くのおすすめおつかい屋",
+    "view_all": "すべて見る"
+  },
+  "services": {
+    "title": "何のお手伝いが必要ですか？",
+    "reservation": "予約代行",
+    "airport_pickup": "空港送迎",
+    "navigation": "道案内",
+    "other": "その他"
+  },
+  "errander_list": {
+    "title": "おつかい屋",
+    "search_placeholder": "都市・専門分野",
+    "empty": "このエリアにおつかい屋はいません。",
+    "filter_all": "すべて",
+    "per_hour": "/時間"
+  },
+  "my": {
+    "title": "マイ",
+    "profile_load_error": "プロフィールを読み込めませんでした。",
+    "stat_active": "進行中",
+    "stat_completed": "完了",
+    "stat_total_spent": "合計",
+    "menu_requests": "マイリクエスト",
+    "menu_requests_value": "{{count}}件進行中",
+    "menu_payment": "支払い",
+    "menu_language": "言語",
+    "menu_settings": "設定",
+    "menu_help": "ヘルプ",
+    "menu_inquiry": "お問い合わせ",
+    "logout": "ログアウト",
+    "logout_confirm_title": "ログアウト",
+    "logout_confirm_message": "本当にログアウトしますか？",
+    "withdraw": "アカウント削除",
+    "withdraw_confirm_title": "アカウント削除",
+    "withdraw_confirm_message": "すべてのデータが削除され\n復元できません。本当に削除しますか？",
+    "withdraw_action": "削除する",
+    "profile_role": "役割",
+    "profile_areas": "活動エリア",
+    "joined_at": "登録日",
+    "role_errander": "おつかい屋 🛵",
+    "role_traveler": "旅行者 ✈️"
+  },
+  "profile_setup": {
+    "title": "プロフィール設定",
+    "subtitle": "始める前に簡単に自己紹介してください。",
+    "photo_optional": "プロフィール写真（任意）",
+    "name_label": "お名前",
+    "name_placeholder": "お名前を入力してください",
+    "nationality_label": "国籍",
+    "nationality_placeholder": "国籍を選択してください",
+    "role_label": "役割",
+    "role_traveler": "旅行者",
+    "role_errander": "おつかい屋",
+    "areas_label": "活動エリア",
+    "submit": "errander を始める"
+  },
+  "profile_edit": {
+    "title": "プロフィール編集",
+    "nickname_label": "ニックネーム",
+    "nickname_placeholder": "ニックネームを入力してください",
+    "role_label": "役割",
+    "role_traveler": "旅行者",
+    "role_errander": "おつかい屋",
+    "areas_label": "活動エリア",
+    "submit": "保存する"
+  },
+  "language": {
+    "title": "言語を選択"
+  }
+}

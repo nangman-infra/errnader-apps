@@ -1,0 +1,10 @@
+diff --git a/index.js b/index.js
+index 55a1a387613b42b8445af3277d57437267d49f9e..9e0e83406102dc5a2f96b524eaddeb58642bea02 100644
+--- a/index.js
++++ b/index.js
+@@ -1,4 +1,4 @@
+-import WebView from './lib/WebView';
++import WebView from './lib/WebView.js';
+ 
+ export { WebView };
+ export default WebView;

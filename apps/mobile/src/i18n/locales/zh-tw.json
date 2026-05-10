@@ -1,0 +1,102 @@
+{
+  "common": {
+    "cancel": "取消",
+    "confirm": "確認",
+    "save": "儲存",
+    "error": "錯誤",
+    "loading": "...",
+    "optional": "（選填）",
+    "required_photo_permission": "需要存取相簿的權限。",
+    "permission_required": "需要權限",
+    "upload_failed": "上傳失敗",
+    "photo_upload_failed": "照片上傳失敗。",
+    "photo_upload_failed_retry": "照片上傳失敗，請重試。",
+    "profile_save_failed": "儲存個人資料失敗。",
+    "profile_save_failed_retry": "儲存個人資料失敗，請重試。"
+  },
+  "tabs": {
+    "home": "首頁",
+    "errander": "跑腿員",
+    "chat": "聊天",
+    "my": "我的"
+  },
+  "start": {
+    "tagline": "韓國旅行，\n有當地跑腿員幫您。",
+    "description": "預約·接送·翻譯，旅途中的一切\n交給我們來處理。",
+    "get_started": "立即開始",
+    "already_have_account": "我已有帳號"
+  },
+  "home": {
+    "greeting": "你好，",
+    "wave": "👋",
+    "errander_section": "附近推薦跑腿員",
+    "view_all": "查看全部"
+  },
+  "services": {
+    "title": "您需要什麼幫助？",
+    "reservation": "代訂服務",
+    "airport_pickup": "機場接送",
+    "navigation": "導航帶路",
+    "other": "其他"
+  },
+  "errander_list": {
+    "title": "跑腿員",
+    "search_placeholder": "城市·專業領域",
+    "empty": "該地區暫無跑腿員。",
+    "filter_all": "全部",
+    "per_hour": "/小時"
+  },
+  "my": {
+    "title": "我的",
+    "profile_load_error": "無法載入個人資料。",
+    "stat_active": "進行中",
+    "stat_completed": "已完成",
+    "stat_total_spent": "總消費",
+    "menu_requests": "我的請求",
+    "menu_requests_value": "{{count}}個進行中",
+    "menu_payment": "付款",
+    "menu_language": "語言",
+    "menu_settings": "設定",
+    "menu_help": "說明",
+    "menu_inquiry": "聯絡我們",
+    "logout": "登出",
+    "logout_confirm_title": "登出",
+    "logout_confirm_message": "確定要登出嗎？",
+    "withdraw": "刪除帳號",
+    "withdraw_confirm_title": "刪除帳號",
+    "withdraw_confirm_message": "所有資料將被刪除\n且無法復原。確定刪除嗎？",
+    "withdraw_action": "刪除",
+    "profile_role": "角色",
+    "profile_areas": "活動區域",
+    "joined_at": "加入日期",
+    "role_errander": "跑腿員 🛵",
+    "role_traveler": "旅行者 ✈️"
+  },
+  "profile_setup": {
+    "title": "設定個人資料",
+    "subtitle": "開始前，請簡單介紹一下自己。",
+    "photo_optional": "大頭貼（選填）",
+    "name_label": "姓名",
+    "name_placeholder": "請輸入您的姓名",
+    "nationality_label": "國籍",
+    "nationality_placeholder": "請選擇您的國籍",
+    "role_label": "角色",
+    "role_traveler": "旅行者",
+    "role_errander": "跑腿員",
+    "areas_label": "活動區域",
+    "submit": "開始使用 errander"
+  },
+  "profile_edit": {
+    "title": "編輯個人資料",
+    "nickname_label": "暱稱",
+    "nickname_placeholder": "請輸入暱稱",
+    "role_label": "角色",
+    "role_traveler": "旅行者",
+    "role_errander": "跑腿員",
+    "areas_label": "活動區域",
+    "submit": "儲存"
+  },
+  "language": {
+    "title": "選擇語言"
+  }
+}

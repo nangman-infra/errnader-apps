@@ -1,0 +1,48 @@
+export interface Country {
+  code: string;
+  name: string;
+  flag: string;
+}
+
+export const COUNTRIES: Country[] = [
+  { code: 'KR', name: '대한민국', flag: '🇰🇷' },
+  { code: 'JP', name: '일본', flag: '🇯🇵' },
+  { code: 'CN', name: '중국', flag: '🇨🇳' },
+  { code: 'US', name: '미국', flag: '🇺🇸' },
+  { code: 'GB', name: '영국', flag: '🇬🇧' },
+  { code: 'FR', name: '프랑스', flag: '🇫🇷' },
+  { code: 'DE', name: '독일', flag: '🇩🇪' },
+  { code: 'IT', name: '이탈리아', flag: '🇮🇹' },
+  { code: 'ES', name: '스페인', flag: '🇪🇸' },
+  { code: 'CA', name: '캐나다', flag: '🇨🇦' },
+  { code: 'AU', name: '호주', flag: '🇦🇺' },
+  { code: 'NZ', name: '뉴질랜드', flag: '🇳🇿' },
+  { code: 'SG', name: '싱가포르', flag: '🇸🇬' },
+  { code: 'HK', name: '홍콩', flag: '🇭🇰' },
+  { code: 'TW', name: '대만', flag: '🇹🇼' },
+  { code: 'TH', name: '태국', flag: '🇹🇭' },
+  { code: 'VN', name: '베트남', flag: '🇻🇳' },
+  { code: 'PH', name: '필리핀', flag: '🇵🇭' },
+  { code: 'MY', name: '말레이시아', flag: '🇲🇾' },
+  { code: 'ID', name: '인도네시아', flag: '🇮🇩' },
+  { code: 'IN', name: '인도', flag: '🇮🇳' },
+  { code: 'BR', name: '브라질', flag: '🇧🇷' },
+  { code: 'MX', name: '멕시코', flag: '🇲🇽' },
+  { code: 'RU', name: '러시아', flag: '🇷🇺' },
+  { code: 'NL', name: '네덜란드', flag: '🇳🇱' },
+  { code: 'SE', name: '스웨덴', flag: '🇸🇪' },
+  { code: 'NO', name: '노르웨이', flag: '🇳🇴' },
+  { code: 'DK', name: '덴마크', flag: '🇩🇰' },
+  { code: 'FI', name: '핀란드', flag: '🇫🇮' },
+  { code: 'CH', name: '스위스', flag: '🇨🇭' },
+  { code: 'AT', name: '오스트리아', flag: '🇦🇹' },
+  { code: 'BE', name: '벨기에', flag: '🇧🇪' },
+  { code: 'PT', name: '포르투갈', flag: '🇵🇹' },
+  { code: 'PL', name: '폴란드', flag: '🇵🇱' },
+  { code: 'TR', name: '터키', flag: '🇹🇷' },
+  { code: 'SA', name: '사우디아라비아', flag: '🇸🇦' },
+  { code: 'AE', name: 'UAE', flag: '🇦🇪' },
+  { code: 'ZA', name: '남아프리카공화국', flag: '🇿🇦' },
+  { code: 'EG', name: '이집트', flag: '🇪🇬' },
+  { code: 'AR', name: '아르헨티나', flag: '🇦🇷' },
+];

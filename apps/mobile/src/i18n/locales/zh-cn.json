@@ -1,0 +1,102 @@
+{
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "error": "错误",
+    "loading": "...",
+    "optional": "（可选）",
+    "required_photo_permission": "需要访问相册权限。",
+    "permission_required": "需要权限",
+    "upload_failed": "上传失败",
+    "photo_upload_failed": "照片上传失败。",
+    "photo_upload_failed_retry": "照片上传失败，请重试。",
+    "profile_save_failed": "保存个人资料失败。",
+    "profile_save_failed_retry": "保存个人资料失败，请重试。"
+  },
+  "tabs": {
+    "home": "首页",
+    "errander": "跑腿员",
+    "chat": "聊天",
+    "my": "我的"
+  },
+  "start": {
+    "tagline": "韩国旅行，\n有当地跑腿员帮您。",
+    "description": "预约·接送·翻译，旅途中的一切\n交给我们来处理。",
+    "get_started": "开始使用",
+    "already_have_account": "我已有账号"
+  },
+  "home": {
+    "greeting": "你好，",
+    "wave": "👋",
+    "errander_section": "附近推荐跑腿员",
+    "view_all": "查看全部"
+  },
+  "services": {
+    "title": "您需要什么帮助？",
+    "reservation": "代订服务",
+    "airport_pickup": "机场接送",
+    "navigation": "导航带路",
+    "other": "其他"
+  },
+  "errander_list": {
+    "title": "跑腿员",
+    "search_placeholder": "城市·专业领域",
+    "empty": "该地区暂无跑腿员。",
+    "filter_all": "全部",
+    "per_hour": "/小时"
+  },
+  "my": {
+    "title": "我的",
+    "profile_load_error": "无法加载个人资料。",
+    "stat_active": "进行中",
+    "stat_completed": "已完成",
+    "stat_total_spent": "总消费",
+    "menu_requests": "我的请求",
+    "menu_requests_value": "{{count}}个进行中",
+    "menu_payment": "支付",
+    "menu_language": "语言",
+    "menu_settings": "设置",
+    "menu_help": "帮助",
+    "menu_inquiry": "联系我们",
+    "logout": "退出登录",
+    "logout_confirm_title": "退出登录",
+    "logout_confirm_message": "确定要退出登录吗？",
+    "withdraw": "注销账号",
+    "withdraw_confirm_title": "注销账号",
+    "withdraw_confirm_message": "所有信息将被删除\n且无法恢复。确定注销吗？",
+    "withdraw_action": "注销",
+    "profile_role": "角色",
+    "profile_areas": "活动区域",
+    "joined_at": "注册日期",
+    "role_errander": "跑腿员 🛵",
+    "role_traveler": "旅行者 ✈️"
+  },
+  "profile_setup": {
+    "title": "设置个人资料",
+    "subtitle": "开始前，请简单介绍一下自己。",
+    "photo_optional": "头像（可选）",
+    "name_label": "姓名",
+    "name_placeholder": "请输入您的姓名",
+    "nationality_label": "国籍",
+    "nationality_placeholder": "请选择您的国籍",
+    "role_label": "角色",
+    "role_traveler": "旅行者",
+    "role_errander": "跑腿员",
+    "areas_label": "活动区域",
+    "submit": "开始使用 errander"
+  },
+  "profile_edit": {
+    "title": "编辑个人资料",
+    "nickname_label": "昵称",
+    "nickname_placeholder": "请输入昵称",
+    "role_label": "角色",
+    "role_traveler": "旅行者",
+    "role_errander": "跑腿员",
+    "areas_label": "活动区域",
+    "submit": "保存"
+  },
+  "language": {
+    "title": "选择语言"
+  }
+}

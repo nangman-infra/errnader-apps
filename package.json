@@ -1,0 +1,27 @@
+{
+  "name": "errander",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "mobile": "pnpm --filter mobile start",
+    "web": "pnpm --filter web dev",
+    "build:web": "pnpm --filter web build",
+    "lint": "pnpm --recursive lint",
+    "typecheck": "pnpm --recursive typecheck",
+    "audit": "pnpm --recursive audit"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "unrs-resolver",
+      "@tailwindcss/oxide"
+    ],
+    "patchedDependencies": {
+      "react-native-webview@13.15.0": "patches/react-native-webview@13.15.0.patch"
+    }
+  }
+}

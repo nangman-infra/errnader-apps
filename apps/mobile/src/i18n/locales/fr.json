@@ -1,0 +1,102 @@
+{
+  "common": {
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "error": "Erreur",
+    "loading": "...",
+    "optional": "(facultatif)",
+    "required_photo_permission": "L'accès à la galerie photo est requis.",
+    "permission_required": "Permission requise",
+    "upload_failed": "Échec du chargement",
+    "photo_upload_failed": "Échec du chargement de la photo.",
+    "photo_upload_failed_retry": "Échec du chargement de la photo. Veuillez réessayer.",
+    "profile_save_failed": "Échec de l'enregistrement du profil.",
+    "profile_save_failed_retry": "Échec de l'enregistrement du profil. Veuillez réessayer."
+  },
+  "tabs": {
+    "home": "Accueil",
+    "errander": "Erranders",
+    "chat": "Chat",
+    "my": "Mon profil"
+  },
+  "start": {
+    "tagline": "Voyagez en Corée,\navec un assistant local.",
+    "description": "Réservations, transferts, traduction —\nnous gérons tout pendant votre voyage.",
+    "get_started": "Commencer",
+    "already_have_account": "J'ai déjà un compte"
+  },
+  "home": {
+    "greeting": "Bonjour,",
+    "wave": "👋",
+    "errander_section": "Erranders recommandés",
+    "view_all": "Voir tout"
+  },
+  "services": {
+    "title": "De quoi avez-vous besoin ?",
+    "reservation": "Réservation",
+    "airport_pickup": "Transfert aéroport",
+    "navigation": "Navigation",
+    "other": "Autre"
+  },
+  "errander_list": {
+    "title": "Erranders",
+    "search_placeholder": "Ville · Spécialité",
+    "empty": "Aucun errander dans cette zone.",
+    "filter_all": "Tous",
+    "per_hour": "/heure"
+  },
+  "my": {
+    "title": "Mon profil",
+    "profile_load_error": "Impossible de charger le profil.",
+    "stat_active": "En cours",
+    "stat_completed": "Terminé",
+    "stat_total_spent": "Total dépensé",
+    "menu_requests": "Mes demandes",
+    "menu_requests_value": "{{count}} en cours",
+    "menu_payment": "Paiement",
+    "menu_language": "Langue",
+    "menu_settings": "Paramètres",
+    "menu_help": "Aide",
+    "menu_inquiry": "Nous contacter",
+    "logout": "Se déconnecter",
+    "logout_confirm_title": "Se déconnecter",
+    "logout_confirm_message": "Voulez-vous vraiment vous déconnecter ?",
+    "withdraw": "Supprimer le compte",
+    "withdraw_confirm_title": "Supprimer le compte",
+    "withdraw_confirm_message": "Toutes vos données seront supprimées\net ne pourront pas être récupérées. Continuer ?",
+    "withdraw_action": "Supprimer",
+    "profile_role": "Rôle",
+    "profile_areas": "Zones d'activité",
+    "joined_at": "Date d'inscription",
+    "role_errander": "Errander 🛵",
+    "role_traveler": "Voyageur ✈️"
+  },
+  "profile_setup": {
+    "title": "Configurer le profil",
+    "subtitle": "Présentez-vous avant de commencer.",
+    "photo_optional": "Photo de profil (facultatif)",
+    "name_label": "Nom",
+    "name_placeholder": "Entrez votre nom",
+    "nationality_label": "Nationalité",
+    "nationality_placeholder": "Sélectionnez votre nationalité",
+    "role_label": "Rôle",
+    "role_traveler": "Voyageur",
+    "role_errander": "Errander",
+    "areas_label": "Zones d'activité",
+    "submit": "Commencer Errander"
+  },
+  "profile_edit": {
+    "title": "Modifier le profil",
+    "nickname_label": "Pseudo",
+    "nickname_placeholder": "Entrez votre pseudo",
+    "role_label": "Rôle",
+    "role_traveler": "Voyageur",
+    "role_errander": "Errander",
+    "areas_label": "Zones d'activité",
+    "submit": "Enregistrer"
+  },
+  "language": {
+    "title": "Choisir la langue"
+  }
+}

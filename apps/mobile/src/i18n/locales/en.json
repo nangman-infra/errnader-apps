@@ -1,0 +1,102 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "OK",
+    "save": "Save",
+    "error": "Error",
+    "loading": "...",
+    "optional": "(optional)",
+    "required_photo_permission": "Photo library access is required.",
+    "permission_required": "Permission Required",
+    "upload_failed": "Upload Failed",
+    "photo_upload_failed": "Photo upload failed.",
+    "photo_upload_failed_retry": "Photo upload failed. Please try again.",
+    "profile_save_failed": "Failed to save profile.",
+    "profile_save_failed_retry": "Failed to save profile. Please try again."
+  },
+  "tabs": {
+    "home": "Home",
+    "errander": "Erranders",
+    "chat": "Chat",
+    "my": "My"
+  },
+  "start": {
+    "tagline": "Travel Korea,\nwith a local helper.",
+    "description": "Reservations, pickups, translations —\nwe handle it while you travel.",
+    "get_started": "Get Started",
+    "already_have_account": "I already have an account"
+  },
+  "home": {
+    "greeting": "Hello,",
+    "wave": "👋",
+    "errander_section": "Nearby Erranders",
+    "view_all": "View All"
+  },
+  "services": {
+    "title": "What do you need?",
+    "reservation": "Reservation",
+    "airport_pickup": "Airport Pickup",
+    "navigation": "Navigation",
+    "other": "Other"
+  },
+  "errander_list": {
+    "title": "Erranders",
+    "search_placeholder": "City · Specialty",
+    "empty": "No erranders in this area.",
+    "filter_all": "All",
+    "per_hour": "/hr"
+  },
+  "my": {
+    "title": "My",
+    "profile_load_error": "Could not load profile.",
+    "stat_active": "Active",
+    "stat_completed": "Done",
+    "stat_total_spent": "Total Spent",
+    "menu_requests": "My Errands",
+    "menu_requests_value": "{{count}} active",
+    "menu_payment": "Payment",
+    "menu_language": "Language",
+    "menu_settings": "Settings",
+    "menu_help": "Help",
+    "menu_inquiry": "Contact Us",
+    "logout": "Log Out",
+    "logout_confirm_title": "Log Out",
+    "logout_confirm_message": "Are you sure you want to log out?",
+    "withdraw": "Delete Account",
+    "withdraw_confirm_title": "Delete Account",
+    "withdraw_confirm_message": "All your data will be deleted\nand cannot be recovered. Continue?",
+    "withdraw_action": "Delete",
+    "profile_role": "Role",
+    "profile_areas": "Active Areas",
+    "joined_at": "Joined",
+    "role_errander": "Errander 🛵",
+    "role_traveler": "Traveler ✈️"
+  },
+  "profile_setup": {
+    "title": "Set Up Profile",
+    "subtitle": "Tell us a bit about yourself before you start.",
+    "photo_optional": "Profile Photo (optional)",
+    "name_label": "Name",
+    "name_placeholder": "Enter your name",
+    "nationality_label": "Nationality",
+    "nationality_placeholder": "Select your nationality",
+    "role_label": "Role",
+    "role_traveler": "Traveler",
+    "role_errander": "Errander",
+    "areas_label": "Active Areas",
+    "submit": "Start Errander"
+  },
+  "profile_edit": {
+    "title": "Edit Profile",
+    "nickname_label": "Nickname",
+    "nickname_placeholder": "Enter your nickname",
+    "role_label": "Role",
+    "role_traveler": "Traveler",
+    "role_errander": "Errander",
+    "areas_label": "Active Areas",
+    "submit": "Save"
+  },
+  "language": {
+    "title": "Select Language"
+  }
+}
