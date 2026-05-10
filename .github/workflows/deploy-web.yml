@@ -1,0 +1,88 @@
+name: Deploy Web
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'apps/web/**'
+      - 'packages/shared/**'
+      - '.github/workflows/deploy-web.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter web build
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::886375649570:role/errander-github-deploy
+          aws-region: ap-northeast-2
+
+      - name: Deploy to S3 (dev)
+        if: github.ref_name == 'dev'
+        env:
+          S3_BUCKET: ${{ secrets.S3_DEV_BUCKET }}
+          CF_DIST_ID: ${{ secrets.CF_DEV_DIST_ID }}
+        run: |
+          aws s3 sync apps/web/dist/ s3://$S3_BUCKET/ \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html"
+          aws s3 cp apps/web/dist/index.html s3://$S3_BUCKET/index.html \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --content-type "text/html"
+          aws cloudfront create-invalidation \
+            --distribution-id $CF_DIST_ID \
+            --paths "/*"
+
+      - name: Deploy to S3 (prod)
+        if: github.ref_name == 'main'
+        env:
+          S3_BUCKET: ${{ secrets.S3_PROD_BUCKET }}
+          CF_DIST_ID: ${{ secrets.CF_PROD_DIST_ID }}
+        run: |
+          aws s3 sync apps/web/dist/ s3://$S3_BUCKET/ \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html"
+          aws s3 cp apps/web/dist/index.html s3://$S3_BUCKET/index.html \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --content-type "text/html"
+          aws cloudfront create-invalidation \
+            --distribution-id $CF_DIST_ID \
+            --paths "/*"
+
+      - name: Summary
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "### 배포 완료 (prod) ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### 배포 완료 (dev) ✅" >> $GITHUB_STEP_SUMMARY
+          fi

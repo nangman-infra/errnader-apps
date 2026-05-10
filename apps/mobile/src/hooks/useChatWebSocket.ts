@@ -3,7 +3,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { getIdToken } from '../api/tokenStorage';
 
-const WS_URL = 'wss://6i2cs7w9vk.execute-api.ap-northeast-2.amazonaws.com/dev';
+const WS_URL = process.env.EXPO_PUBLIC_WS_URL!;
 const RECONNECT_DELAY_MS = 5000;
 
 export function useChatWebSocket() {

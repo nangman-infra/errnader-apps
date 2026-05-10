@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getIdToken, getRefreshToken, setTokens, clearTokens } from './tokenStorage';
 
-const BASE_URL = 'https://bj9l28xy18.execute-api.ap-northeast-2.amazonaws.com/dev';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,

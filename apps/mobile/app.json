@@ -26,7 +26,6 @@
     },
     "plugins": [
       "expo-router",
-      "@react-native-community/datetimepicker",
       [
         "expo-image-picker",
         {
@@ -37,6 +36,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "39ea9c60-622b-49c2-9a25-24cf11062a4f"
+      }
+    },
+    "owner": "junoshon"
   }
 }
