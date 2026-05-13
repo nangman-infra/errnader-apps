@@ -2,6 +2,7 @@ export type WebViewMessageType =
   | 'NAVIGATE'
   | 'GET_USER_LOCATION'
   | 'LOCATION_RESPONSE'
+  | 'AUTH_TOKEN'
   | 'AUTH_REQUEST'
   | 'AUTH_RESPONSE'
   | 'ERROR';
@@ -23,12 +24,15 @@ export interface LocationResponsePayload {
 }
 
 export interface AuthRequestPayload {
-  provider: 'google' | 'apple' | 'kakao';
+  provider?: 'google' | 'apple' | 'kakao';
+  reason?: 'token_expired' | 'logout' | 'delete_account';
 }
 
 export interface AuthResponsePayload {
-  token: string;
-  userId: string;
+  token?: string;
+  idToken?: string;
+  refreshToken?: string;
+  userId?: string;
 }
 
 export interface ErrorPayload {

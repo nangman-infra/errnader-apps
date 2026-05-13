@@ -469,3 +469,88 @@ VITE_WS_URL=wss://6i2cs7w9vk.execute-api.ap-northeast-2.amazonaws.com/dev
 | WebView 브릿지 타입 | `packages/shared/src/types/webview.ts` |
 | 현재 웹앱 진입점 | `apps/web/src/main.tsx` |
 | 현재 웹앱 브릿지 훅 | `apps/web/src/hooks/useNativeBridge.ts` |
+
+---
+
+## 13. 개발 컨벤션 (Development Conventions)
+
+> 이 섹션은 errander 프로젝트 전반에 적용되는 코드 컨벤션입니다.  
+> 마이그레이션 작업 시 반드시 준수해야 합니다.
+
+---
+
+### 코드 품질 원칙
+
+#### 매직 넘버 금지
+
+```typescript
+// ❌ 나쁜 예
+await delay(300);
+
+// ✅ 좋은 예
+const ANIMATION_DELAY_MS = 300;
+await delay(ANIMATION_DELAY_MS);
+```
+
+#### 모듈 구조
+
+- 재사용 가능한 컴포넌트는 반드시 **분리된 파일**로 관리한다.
+- `apps/mobile`과 `apps/web` 간 공유 로직은 `packages/shared`에 위치시킨다.
+- 컴포넌트, 훅, 유틸리티는 각각 독립된 디렉토리로 분리한다.
+
+---
+
+### 네이밍 규칙
+
+| 대상 | 규칙 | 예시 |
+|------|------|------|
+| 컴포넌트 | PascalCase | `TaskCard.tsx` |
+| 훅 | camelCase + use 접두사 | `useTaskList.ts` |
+| 유틸 함수 | camelCase | `formatDate.ts` |
+| 상수 | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT` |
+| 타입/인터페이스 | PascalCase | `TaskPayload` |
+
+---
+
+### 경로 규칙
+
+코드 내 모든 경로는 반드시 **절대 시스템 경로**를 사용한다.
+
+```
+✅ /Users/junho/errander/apps/web/src/components/Button.tsx
+```
+
+---
+
+### 보안 원칙
+
+- CVE가 알려진 라이브러리 버전은 **절대 사용하지 않는다.**
+- 프로젝트 시작 전 및 정기적으로 `pnpm audit`를 실행한다.
+- API 키, 시크릿은 코드에 하드코딩하지 않고 반드시 **환경변수**를 사용한다.
+- WebView에서 `allowsInlineMediaPlayback`, `javaScriptEnabled` 등 보안 관련 설정은 변경 전 반드시 확인한다.
+
+---
+
+### 구현 원칙
+
+- 요청된 기능은 **완전히 구현**한다. TODO, 플레이스홀더, 미완성 로직은 절대 남기지 않는다.
+- 모든 필요한 import를 포함한다.
+- 구현 전 **코드베이스를 먼저 탐색**한다.
+- **명시적으로 요청하지 않은 코드·로직·컴포넌트는 절대 수정하지 않는다.**
+
+---
+
+### 작업 체크리스트 (Pre-Implementation Checklist)
+
+코드를 작성하기 전 다음을 순서대로 확인한다:
+
+```
+[ ] 1. 코드베이스 탐색 완료 (기존 구현 파악)
+[ ] 2. 관련 공식 문서 최신 버전 확인
+[ ] 3. 단계별 의사코드 작성 완료
+[ ] 4. 수정 범위 명확히 선언 (변경할 파일 목록)
+[ ] 5. 구현 완료 후 미완성 항목 없음 확인
+[ ] 6. import 누락 없음 확인
+[ ] 7. 절대경로 사용 확인
+[ ] 8. pnpm audit 이상 없음 확인
+```

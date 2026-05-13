@@ -1,5 +1,16 @@
-import StartScreen from '../src/components/StartScreen';
+import { View, StyleSheet } from 'react-native';
+import { WebViewContainer } from '../src/components/WebViewContainer';
 
 export default function IndexRoute() {
-  return <StartScreen />;
+  return (
+    <View style={styles.container}>
+      <WebViewContainer />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

@@ -3,8 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenContainer from './ScreenContainer';
 import { sendOtp, verifyOtp } from '../api/auth';
-import { setTokens } from '../api/tokenStorage';
-import { apiClient } from '../api/client';
 
 const RESEND_TIMEOUT_S = 41;
 const CODE_LENGTH = 6;
@@ -32,14 +30,8 @@ export default function VerifyScreen() {
     setIsVerifying(true);
 
     verifyOtp(email, entered)
-      .then(async ({ data }) => {
-        await setTokens({ idToken: data.idToken, refreshToken: data.refreshToken, expiresIn: data.expiresIn });
-        try {
-          const { data: profile } = await apiClient.get('/me');
-          router.replace(profile?.name ? '/(tabs)' : '/profile-setup');
-        } catch {
-          router.replace('/profile-setup');
-        }
+      .then(() => {
+        router.replace('/');
       })
       .catch(() => {
         setHasError(true);
