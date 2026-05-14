@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Camera, ChevronLeft, ChevronRight, CircleDollarSign, ImageIcon, MapPin, Navigation, Plus, X, type LucideIcon } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -136,6 +136,7 @@ export function ChatRoomPage() {
   });
   const [place, setPlace] = useState('');
   const [note, setNote] = useState('');
+  const [errandTitle, setErrandTitle] = useState('');
   const { data: profile } = useMyProfile();
   const { data: messages = [], isLoading, isError } = useMessages(roomId);
   const sendMessage = useSendMessage(roomId);
@@ -146,6 +147,12 @@ export function ChatRoomPage() {
   const cachedRooms = queryClient.getQueryData<ChatRoom[]>(['chatRooms']);
   const participantName = routeState?.participantName ?? cachedRooms?.find((room) => room.id === roomId)?.erranderName;
   const roomTitle = participantName ? t('chat.roomTitleWithName', { name: participantName }) : t('chat.roomTitleFallback');
+  useEffect(() => {
+    if (errandForReceiver?.title && !errandTitle) {
+      setErrandTitle(errandForReceiver.title);
+    }
+  }, [errandForReceiver?.title]);
+
   const createConfirmationCard = useCreateConfirmationCard(routeState?.errandId);
   const todayValue = getTodayDateValue();
   const scheduleCalendarCells = useMemo(() => getCalendarCells(scheduleVisibleMonth, todayValue), [scheduleVisibleMonth, todayValue]);
@@ -153,7 +160,7 @@ export function ChatRoomPage() {
   const isSchedulePreviousMonthDisabled = scheduleVisibleMonth <= currentMonthStart;
   const scheduledTime = `${String(scheduledHour).padStart(DATE_PART_PAD_LENGTH, '0')}:${String(scheduledMinute).padStart(DATE_PART_PAD_LENGTH, '0')}`;
   const scheduledAt = scheduledDate ? `${scheduledDate} ${scheduledTime}` : '';
-  const canCreateConfirmation = !!routeState?.errandId && !!receiverId && Number(priceAmount) > 0 && scheduledAt.length > 0 && place.trim().length > 0 && !createConfirmationCard.isPending;
+  const canCreateConfirmation = !!routeState?.errandId && !!receiverId && Number(priceAmount) > 0 && scheduledAt.length > 0 && place.trim().length > 0 && errandTitle.trim().length > 0 && !createConfirmationCard.isPending;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -208,6 +215,7 @@ export function ChatRoomPage() {
       scheduledAt,
       place: place.trim(),
       note: note.trim() || undefined,
+      errandTitle: errandTitle.trim() || undefined,
     });
     setPriceAmount('');
     setScheduledDate('');
@@ -215,6 +223,7 @@ export function ChatRoomPage() {
     setScheduledMinute(0);
     setPlace('');
     setNote('');
+    setErrandTitle('');
     setIsConfirmationFormOpen(false);
     queryClient.invalidateQueries({ queryKey: ['chat', roomId] });
   }
@@ -246,6 +255,12 @@ export function ChatRoomPage() {
             </button>
             {isConfirmationFormOpen ? (
               <div className="mt-3 grid gap-2">
+                <input
+                  value={errandTitle}
+                  onChange={(event) => setErrandTitle(event.target.value)}
+                  className="rounded-xl border border-[#FED7AA] bg-white px-3 py-2 text-sm outline-none focus:border-[#F97316]"
+                  placeholder={t('transaction.errandTitlePlaceholder')}
+                />
                 <input
                   value={priceAmount}
                   onChange={(event) => setPriceAmount(event.target.value)}
@@ -502,6 +517,7 @@ function ConfirmationMessageCard({ card, currentUserId }: { card: ErrandConfirma
     <article className="rounded-2xl border border-[#FED7AA] bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
       <p className="mb-3 text-sm font-bold text-[#F97316]">{t('transaction.confirmationCard')}</p>
       <div className="grid gap-2 text-sm">
+        {card.errandTitle ? <SummaryRow label={t('transaction.errandTitle')} value={card.errandTitle} /> : null}
         <SummaryRow label={t('transaction.price')} value={`₩${card.priceAmount.toLocaleString()}`} />
         <SummaryRow label={t('transaction.schedule')} value={card.scheduledAt} />
         <SummaryRow label={t('transaction.place')} value={card.place} />

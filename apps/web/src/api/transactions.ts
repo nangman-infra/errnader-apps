@@ -17,6 +17,7 @@ interface CreateConfirmationCardPayload {
   scheduledAt: string;
   place: string;
   note?: string;
+  errandTitle?: string;
 }
 
 interface RespondPayload {

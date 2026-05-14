@@ -123,6 +123,7 @@ export interface ErrandConfirmationCard {
   scheduledAt: string;
   place: string;
   note?: string | null;
+  errandTitle?: string | null;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
   createdAt: string;
   respondedAt?: string | null;
