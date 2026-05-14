@@ -8,6 +8,8 @@ interface FetchErrandsOptions {
   status?: ErrandStatus;
 }
 
+const ALL_ERRAND_STATUSES: ErrandStatus[] = ['PENDING', 'CONFIRMED', 'ACCEPTED', 'COMPLETED', 'CANCELLED'];
+
 async function fetchErrands(opts: FetchErrandsOptions): Promise<Errand[]> {
   const params: Record<string, string> = {};
   if (opts.mine) params.mine = 'true';
@@ -25,7 +27,18 @@ export function useErrands(opts: FetchErrandsOptions = {}) {
 }
 
 export function useMyErrands(status?: ErrandStatus) {
-  return useErrands({ mine: true, status });
+  return useQuery({
+    queryKey: ['errands', { mine: true, status }],
+    queryFn: async () => {
+      if (status) {
+        return fetchErrands({ mine: true, status });
+      }
+      const results = await Promise.all(
+        ALL_ERRAND_STATUSES.map((s) => fetchErrands({ mine: true, status: s })),
+      );
+      return results.flat().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    },
+  });
 }
 
 export function useErrand(errandId: string | undefined) {
