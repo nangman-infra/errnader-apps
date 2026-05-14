@@ -16,7 +16,6 @@ export interface UserProfile {
   areas?: string[];
   linePayProfileUrl?: string | null;
   paymentNote?: string | null;
-  tossId?: string | null;
   lineId?: string | null;
   whatsappPhone?: string | null;
   kakaopayQrUrl?: string | null;

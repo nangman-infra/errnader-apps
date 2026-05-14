@@ -262,7 +262,6 @@ export const es = {
     photoUploadFailed: 'No se pudo subir la foto.',
     paymentMethods: 'Métodos de pago',
     paymentMethodsHelp: 'Comparte tu QR rápidamente en el chat.',
-    tossIdPlaceholder: 'ID de Toss',
     lineIdPlaceholder: 'ID de LINE',
     whatsappPlaceholder: '821012345678 (incluir código de país, sin guiones)',
     uploadKakaopayQr: 'Subir imagen QR de KakaoPay',

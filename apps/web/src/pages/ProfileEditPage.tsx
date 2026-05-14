@@ -24,7 +24,6 @@ export function ProfileEditPage() {
   const [isUploadingKakaopayQr, setIsUploadingKakaopayQr] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [roleChangedTo, setRoleChangedTo] = useState<UserRole | null>(null);
-  const [tossId, setTossId] = useState('');
   const [lineId, setLineId] = useState('');
   const [whatsappPhone, setWhatsappPhone] = useState('');
   const [kakaopayQrUrl, setKakaopayQrUrl] = useState<string | null>(null);
@@ -35,7 +34,6 @@ export function ProfileEditPage() {
     setRole(profile.role ?? 'traveler');
     setSelectedAreas(profile.areas ?? []);
     setAvatarUrl(profile.avatarUrl ?? null);
-    setTossId(profile.tossId ?? '');
     setLineId(profile.lineId ?? '');
     setWhatsappPhone(profile.whatsappPhone ?? '');
     setKakaopayQrUrl(profile.kakaopayQrUrl ?? null);
@@ -61,7 +59,6 @@ export function ProfileEditPage() {
         role,
         avatarUrl: avatarUrl ?? undefined,
         areas: selectedAreas,
-        tossId: tossId.trim(),
         lineId: lineId.trim(),
         whatsappPhone: whatsappPhone.trim(),
         kakaopayQrUrl: kakaopayQrUrl ?? '',
@@ -257,21 +254,6 @@ export function ProfileEditPage() {
           </legend>
           <p className="mb-4 text-xs text-[#9CA3AF]">{t('my.paymentMethodsHelp')}</p>
           <div className="grid gap-3">
-            <label className="block">
-              <span className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
-                <span className="inline-block size-4 rounded-sm bg-[#0064FF]" />
-                Toss
-              </span>
-              <div className="flex items-center rounded-2xl border border-transparent bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.05)] focus-within:border-[#F97316]">
-                <span className="shrink-0 text-sm text-[#9CA3AF]">toss.me/</span>
-                <input
-                  value={tossId}
-                  onChange={(event) => setTossId(event.target.value)}
-                  placeholder={t('my.tossIdPlaceholder')}
-                  className="min-w-0 flex-1 bg-transparent text-sm text-[#111827] outline-none"
-                />
-              </div>
-            </label>
             <label className="block">
               <span className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
                 <span className="inline-block size-4 rounded-sm bg-[#00B900]" />

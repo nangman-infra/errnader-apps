@@ -579,9 +579,6 @@ function PaymentQrModal({ profile, onClose }: { profile: ReturnType<typeof useMy
 
   const methods = useMemo<PaymentMethod[]>(() => {
     const result: PaymentMethod[] = [];
-    if (profile?.tossId) {
-      result.push({ key: 'toss', label: 'Toss', color: '#0064FF', qrValue: `https://toss.me/${profile.tossId}` });
-    }
     if (profile?.lineId) {
       result.push({ key: 'line', label: 'LINE', color: '#00B900', qrValue: `https://line.me/ti/p/~${profile.lineId}` });
     }
