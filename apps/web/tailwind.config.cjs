@@ -1,7 +1,9 @@
+const path = require('node:path');
+
 module.exports = {
   content: [
-    '/Users/junoshon/Developments/errander/apps/web/index.html',
-    '/Users/junoshon/Developments/errander/apps/web/src/**/*.{ts,tsx}',
+    path.join(__dirname, 'index.html'),
+    path.join(__dirname, 'src/**/*.{ts,tsx}'),
   ],
   theme: {
     extend: {},
