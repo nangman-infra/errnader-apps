@@ -262,6 +262,8 @@ export const ja = {
     photoUploadFailed: '写真のアップロードに失敗しました。',
     paymentMethods: '支払い方法',
     paymentMethodsHelp: 'チャットでQRコードをすぐに共有できます。',
+    paymentMethodCount: '件登録済み',
+    paymentMethodNone: '未登録',
     lineIdPlaceholder: 'LINE ID',
     whatsappPlaceholder: '821012345678（国番号含む、ハイフンなし）',
     uploadKakaopayQr: 'KakaoPay QR画像をアップロード',

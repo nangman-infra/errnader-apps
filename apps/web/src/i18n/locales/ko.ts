@@ -263,6 +263,8 @@ export const ko = {
     profileSaveFailed: '프로필 저장에 실패했어요.',
     paymentMethods: '결제 수단',
     paymentMethodsHelp: '등록해두면 채팅에서 QR 코드로 빠르게 공유할 수 있어요.',
+    paymentMethodCount: '개 등록됨',
+    paymentMethodNone: '미등록',
     lineIdPlaceholder: '라인 아이디',
     whatsappPlaceholder: '821012345678 (국가번호 포함, - 제외)',
     uploadKakaopayQr: '카카오페이 QR 이미지 업로드',

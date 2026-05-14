@@ -262,6 +262,8 @@ export const en = {
     photoUploadFailed: 'Photo upload failed.',
     paymentMethods: 'Payment methods',
     paymentMethodsHelp: 'Share your QR code instantly in chat.',
+    paymentMethodCount: ' registered',
+    paymentMethodNone: 'None',
     lineIdPlaceholder: 'LINE ID',
     whatsappPlaceholder: '821012345678 (include country code, no dashes)',
     uploadKakaopayQr: 'Upload KakaoPay QR image',

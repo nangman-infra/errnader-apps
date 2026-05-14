@@ -21,12 +21,8 @@ export function ProfileEditPage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [isUploadingKakaopayQr, setIsUploadingKakaopayQr] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [roleChangedTo, setRoleChangedTo] = useState<UserRole | null>(null);
-  const [lineId, setLineId] = useState('');
-  const [whatsappPhone, setWhatsappPhone] = useState('');
-  const [kakaopayQrUrl, setKakaopayQrUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!profile) return;
@@ -34,9 +30,6 @@ export function ProfileEditPage() {
     setRole(profile.role ?? 'traveler');
     setSelectedAreas(profile.areas ?? []);
     setAvatarUrl(profile.avatarUrl ?? null);
-    setLineId(profile.lineId ?? '');
-    setWhatsappPhone(profile.whatsappPhone ?? '');
-    setKakaopayQrUrl(profile.kakaopayQrUrl ?? null);
   }, [profile]);
 
   const isValid = name.trim().length > 0;
@@ -59,9 +52,6 @@ export function ProfileEditPage() {
         role,
         avatarUrl: avatarUrl ?? undefined,
         areas: selectedAreas,
-        lineId: lineId.trim(),
-        whatsappPhone: whatsappPhone.trim(),
-        kakaopayQrUrl: kakaopayQrUrl ?? '',
       });
       queryClient.setQueryData<import('../types/domain').UserProfile>(['myProfile'], (old) =>
         old ? { ...old, name: name.trim(), role, areas: selectedAreas, avatarUrl: avatarUrl ?? old.avatarUrl } : old,
@@ -76,26 +66,6 @@ export function ProfileEditPage() {
       setErrorMessage(t('my.profileSaveFailed'));
     } finally {
       setIsSubmitting(false);
-    }
-  }
-
-  async function handleKakaopayQrChange(file: File | undefined) {
-    if (!file) return;
-    const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg';
-    setIsUploadingKakaopayQr(true);
-    setErrorMessage('');
-    try {
-      const { data } = await apiClient.get<{ uploadUrl: string; publicUrl: string }>(`/presigned-url?ext=${ext}`);
-      await fetch(data.uploadUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type || 'image/jpeg' },
-        body: file,
-      });
-      setKakaopayQrUrl(data.publicUrl);
-    } catch {
-      setErrorMessage(t('my.photoUploadFailed'));
-    } finally {
-      setIsUploadingKakaopayQr(false);
     }
   }
 
@@ -245,71 +215,6 @@ export function ProfileEditPage() {
                 </button>
               );
             })}
-          </div>
-        </fieldset>
-
-        <fieldset className="mb-10">
-          <legend className="mb-1 text-sm font-semibold text-[#374151]">
-            {t('my.paymentMethods')} <span className="font-normal text-[#9CA3AF]">{t('common.optional')}</span>
-          </legend>
-          <p className="mb-4 text-xs text-[#9CA3AF]">{t('my.paymentMethodsHelp')}</p>
-          <div className="grid gap-3">
-            <label className="block">
-              <span className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
-                <span className="inline-block size-4 rounded-sm bg-[#00B900]" />
-                LINE
-              </span>
-              <div className="flex items-center rounded-2xl border border-transparent bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.05)] focus-within:border-[#F97316]">
-                <span className="shrink-0 text-sm text-[#9CA3AF]">ID: </span>
-                <input
-                  value={lineId}
-                  onChange={(event) => setLineId(event.target.value)}
-                  placeholder={t('my.lineIdPlaceholder')}
-                  className="min-w-0 flex-1 bg-transparent text-sm text-[#111827] outline-none"
-                />
-              </div>
-            </label>
-            <label className="block">
-              <span className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
-                <span className="inline-block size-4 rounded-sm bg-[#25D366]" />
-                WhatsApp
-              </span>
-              <div className="flex items-center rounded-2xl border border-transparent bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.05)] focus-within:border-[#F97316]">
-                <span className="shrink-0 text-sm text-[#9CA3AF]">+</span>
-                <input
-                  value={whatsappPhone}
-                  onChange={(event) => setWhatsappPhone(event.target.value)}
-                  inputMode="tel"
-                  placeholder={t('my.whatsappPlaceholder')}
-                  className="min-w-0 flex-1 bg-transparent text-sm text-[#111827] outline-none"
-                />
-              </div>
-            </label>
-            <div>
-              <span className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
-                <span className="inline-block size-4 rounded-sm bg-[#FAE100]" />
-                KakaoPay
-              </span>
-              <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-transparent bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-                {kakaopayQrUrl ? (
-                  <img src={kakaopayQrUrl} alt="KakaoPay QR" className="size-12 rounded-lg object-cover" />
-                ) : (
-                  <div className="grid size-12 shrink-0 place-items-center rounded-lg bg-[#FAF9F3] text-[#9CA3AF]">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M17 17h3v3M14 17h.01M20 14h.01"/></svg>
-                  </div>
-                )}
-                <span className="text-sm text-[#6B7280]">
-                  {isUploadingKakaopayQr ? t('my.uploadingQr') : kakaopayQrUrl ? t('my.changeQr') : t('my.uploadKakaopayQr')}
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  disabled={isUploadingKakaopayQr}
-                  className="sr-only"
-                  onChange={(event) => handleKakaopayQrChange(event.target.files?.[0])}
-                />
-              </label>
-            </div>
           </div>
         </fieldset>
 
