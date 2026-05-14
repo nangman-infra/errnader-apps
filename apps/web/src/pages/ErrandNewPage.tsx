@@ -1,4 +1,5 @@
 import { FormEvent, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -93,6 +94,7 @@ export function ErrandNewPage() {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const initialWhat = useMemo(() => searchParams.get('what') ?? '', [searchParams]);
   const [step, setStep] = useState<FormStep>(1);
   const [title, setTitle] = useState('');
@@ -176,6 +178,7 @@ export function ErrandNewPage() {
         budgetAmount: budgetAmount.trim() ? Number(budgetAmount) : null,
         budgetCurrency: budgetAmount.trim() ? 'KRW' : null,
       });
+      void queryClient.invalidateQueries({ queryKey: ['errands'] });
       navigate('/my/errands', { replace: true });
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : t('errand.submitFailed'));
