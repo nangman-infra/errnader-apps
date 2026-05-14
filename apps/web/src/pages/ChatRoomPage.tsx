@@ -1,9 +1,10 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Camera, CircleDollarSign, ImageIcon, MapPin, Navigation, Plus, X, type LucideIcon } from 'lucide-react';
+import { Camera, ChevronLeft, ChevronRight, CircleDollarSign, ImageIcon, MapPin, Navigation, Plus, X, type LucideIcon } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiClient } from '../api/client';
+import { useErrand } from '../api/errands';
 import { useMyProfile } from '../api/profile';
 import { useCreateConfirmationCard, useRespondCompletionRequest, useRespondConfirmationCard } from '../api/transactions';
 import { StateBlock } from '../components/StateBlock';
@@ -27,6 +28,60 @@ interface AttachmentAction {
   Icon: LucideIcon;
   iconClassName: string;
   disabled?: boolean;
+}
+
+const DATE_PART_PAD_LENGTH = 2;
+const FIRST_DAY_OF_MONTH = 1;
+const MONTH_STEP = 1;
+const CALENDAR_COLUMNS = 7;
+const DEFAULT_SCHEDULE_HOUR = 9;
+const HOURS_IN_DAY = 24;
+const MINUTE_OPTIONS = [0, 15, 30, 45];
+
+interface CalendarCell {
+  key: string;
+  label: string;
+  value: string;
+  isEmpty: boolean;
+  isDisabled: boolean;
+}
+
+function getTodayDateValue(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + MONTH_STEP).padStart(DATE_PART_PAD_LENGTH, '0');
+  const day = String(today.getDate()).padStart(DATE_PART_PAD_LENGTH, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getMonthTitle(date: Date): string {
+  return `${date.getFullYear()}.${String(date.getMonth() + MONTH_STEP).padStart(DATE_PART_PAD_LENGTH, '0')}`;
+}
+
+function getCalendarCells(monthDate: Date, todayValue: string): CalendarCell[] {
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  const firstDate = new Date(year, month, FIRST_DAY_OF_MONTH);
+  const lastDate = new Date(year, month + MONTH_STEP, 0);
+  const leadingEmptyCount = firstDate.getDay();
+  const cells: CalendarCell[] = [];
+
+  for (let index = 0; index < leadingEmptyCount; index += 1) {
+    cells.push({ key: `empty-${index}`, label: '', value: '', isEmpty: true, isDisabled: true });
+  }
+  for (let day = FIRST_DAY_OF_MONTH; day <= lastDate.getDate(); day += 1) {
+    const date = new Date(year, month, day);
+    const year2 = date.getFullYear();
+    const m = String(date.getMonth() + MONTH_STEP).padStart(DATE_PART_PAD_LENGTH, '0');
+    const d = String(date.getDate()).padStart(DATE_PART_PAD_LENGTH, '0');
+    const value = `${year2}-${m}-${d}`;
+    cells.push({ key: value, label: String(day), value, isEmpty: false, isDisabled: value < todayValue });
+  }
+  const trailingEmptyCount = (CALENDAR_COLUMNS - (cells.length % CALENDAR_COLUMNS)) % CALENDAR_COLUMNS;
+  for (let index = 0; index < trailingEmptyCount; index += 1) {
+    cells.push({ key: `trailing-empty-${index}`, label: '', value: '', isEmpty: true, isDisabled: true });
+  }
+  return cells;
 }
 
 const ATTACHMENT_ACTIONS: AttachmentAction[] = [
@@ -72,7 +127,13 @@ export function ChatRoomPage() {
   const [isAttachmentPanelOpen, setIsAttachmentPanelOpen] = useState(false);
   const [isConfirmationFormOpen, setIsConfirmationFormOpen] = useState(false);
   const [priceAmount, setPriceAmount] = useState('');
-  const [scheduledAt, setScheduledAt] = useState('');
+  const [scheduledDate, setScheduledDate] = useState('');
+  const [scheduledHour, setScheduledHour] = useState(DEFAULT_SCHEDULE_HOUR);
+  const [scheduledMinute, setScheduledMinute] = useState(0);
+  const [scheduleVisibleMonth, setScheduleVisibleMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), FIRST_DAY_OF_MONTH);
+  });
   const [place, setPlace] = useState('');
   const [note, setNote] = useState('');
   const { data: profile } = useMyProfile();
@@ -80,11 +141,19 @@ export function ChatRoomPage() {
   const sendMessage = useSendMessage(roomId);
   const canSend = input.trim().length > 0 && !sendMessage.isPending;
   const routeState = location.state as { participantName?: string; errandId?: string; receiverId?: string } | null;
+  const { data: errandForReceiver } = useErrand(routeState?.errandId);
+  const receiverId = routeState?.receiverId ?? errandForReceiver?.travelerId ?? errandForReceiver?.userId;
   const cachedRooms = queryClient.getQueryData<ChatRoom[]>(['chatRooms']);
   const participantName = routeState?.participantName ?? cachedRooms?.find((room) => room.id === roomId)?.erranderName;
   const roomTitle = participantName ? t('chat.roomTitleWithName', { name: participantName }) : t('chat.roomTitleFallback');
   const createConfirmationCard = useCreateConfirmationCard(routeState?.errandId);
-  const canCreateConfirmation = !!routeState?.errandId && !!routeState.receiverId && Number(priceAmount) > 0 && scheduledAt.length > 0 && place.trim().length > 0 && !createConfirmationCard.isPending;
+  const todayValue = getTodayDateValue();
+  const scheduleCalendarCells = useMemo(() => getCalendarCells(scheduleVisibleMonth, todayValue), [scheduleVisibleMonth, todayValue]);
+  const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), FIRST_DAY_OF_MONTH);
+  const isSchedulePreviousMonthDisabled = scheduleVisibleMonth <= currentMonthStart;
+  const scheduledTime = `${String(scheduledHour).padStart(DATE_PART_PAD_LENGTH, '0')}:${String(scheduledMinute).padStart(DATE_PART_PAD_LENGTH, '0')}`;
+  const scheduledAt = scheduledDate ? `${scheduledDate} ${scheduledTime}` : '';
+  const canCreateConfirmation = !!routeState?.errandId && !!receiverId && Number(priceAmount) > 0 && scheduledAt.length > 0 && place.trim().length > 0 && !createConfirmationCard.isPending;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -120,10 +189,20 @@ export function ChatRoomPage() {
     }
   }
 
+  function handleScheduleHourChange(direction: 1 | -1) {
+    setScheduledHour((h) => (h + direction + HOURS_IN_DAY) % HOURS_IN_DAY);
+  }
+
+  function handleScheduleMinuteChange(direction: 1 | -1) {
+    const currentIndex = MINUTE_OPTIONS.indexOf(scheduledMinute);
+    const nextIndex = (currentIndex + direction + MINUTE_OPTIONS.length) % MINUTE_OPTIONS.length;
+    setScheduledMinute(MINUTE_OPTIONS[nextIndex]!);
+  }
+
   async function handleCreateConfirmationCard() {
-    if (!routeState?.receiverId || !canCreateConfirmation) return;
+    if (!receiverId || !canCreateConfirmation) return;
     await createConfirmationCard.mutateAsync({
-      receiverId: routeState.receiverId,
+      receiverId,
       priceAmount: Number(priceAmount),
       currency: 'KRW',
       scheduledAt,
@@ -131,7 +210,9 @@ export function ChatRoomPage() {
       note: note.trim() || undefined,
     });
     setPriceAmount('');
-    setScheduledAt('');
+    setScheduledDate('');
+    setScheduledHour(DEFAULT_SCHEDULE_HOUR);
+    setScheduledMinute(0);
     setPlace('');
     setNote('');
     setIsConfirmationFormOpen(false);
@@ -172,12 +253,114 @@ export function ChatRoomPage() {
                   className="rounded-xl border border-[#FED7AA] bg-white px-3 py-2 text-sm outline-none focus:border-[#F97316]"
                   placeholder={t('transaction.pricePlaceholder')}
                 />
-                <input
-                  value={scheduledAt}
-                  onChange={(event) => setScheduledAt(event.target.value)}
-                  type="datetime-local"
-                  className="rounded-xl border border-[#FED7AA] bg-white px-3 py-2 text-sm outline-none focus:border-[#F97316]"
-                />
+                <div className="rounded-xl border border-[#FED7AA] bg-white p-3">
+                  <div className="mb-3 flex items-center justify-between">
+                    <button
+                      type="button"
+                      disabled={isSchedulePreviousMonthDisabled}
+                      onClick={() => setScheduleVisibleMonth((m) => new Date(m.getFullYear(), m.getMonth() - MONTH_STEP, FIRST_DAY_OF_MONTH))}
+                      className="grid size-8 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316] disabled:bg-[#F9FAFB] disabled:text-[#D1D5DB]"
+                      aria-label={t('errand.previousMonth')}
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <strong className="text-sm font-bold text-[#111827]">{getMonthTitle(scheduleVisibleMonth)}</strong>
+                    <button
+                      type="button"
+                      onClick={() => setScheduleVisibleMonth((m) => new Date(m.getFullYear(), m.getMonth() + MONTH_STEP, FIRST_DAY_OF_MONTH))}
+                      className="grid size-8 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                      aria-label={t('errand.nextMonth')}
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                  <div className="mb-1.5 grid grid-cols-7 text-center text-[10px] font-bold text-[#9CA3AF]">
+                    <span>{t('errand.weekdaySun')}</span>
+                    <span>{t('errand.weekdayMon')}</span>
+                    <span>{t('errand.weekdayTue')}</span>
+                    <span>{t('errand.weekdayWed')}</span>
+                    <span>{t('errand.weekdayThu')}</span>
+                    <span>{t('errand.weekdayFri')}</span>
+                    <span>{t('errand.weekdaySat')}</span>
+                  </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {scheduleCalendarCells.map((cell) => {
+                      const selected = cell.value === scheduledDate;
+                      return (
+                        <button
+                          key={cell.key}
+                          type="button"
+                          disabled={cell.isDisabled}
+                          onClick={() => setScheduledDate(cell.value)}
+                          className={`grid aspect-square place-items-center rounded-full text-xs font-semibold ${
+                            selected
+                              ? 'bg-[#F97316] text-white shadow-[0_4px_10px_rgba(249,115,22,0.25)]'
+                              : cell.isEmpty
+                                ? 'text-transparent'
+                                : cell.isDisabled
+                                  ? 'text-[#D1D5DB]'
+                                  : 'bg-[#FFF9F4] text-[#374151]'
+                          }`}
+                        >
+                          {cell.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {scheduledDate ? (
+                    <div className="mt-3 border-t border-[#FFE4CC] pt-3">
+                      <p className="mb-2 text-center text-[10px] font-bold text-[#9CA3AF]">{t('errand.timePicker')}</p>
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleScheduleHourChange(-1)}
+                            className="grid size-8 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.previousHour')}
+                          >
+                            <ChevronLeft size={16} />
+                          </button>
+                          <span className="w-8 text-center text-base font-bold text-[#111827]">
+                            {String(scheduledHour).padStart(DATE_PART_PAD_LENGTH, '0')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleScheduleHourChange(1)}
+                            className="grid size-8 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.nextHour')}
+                          >
+                            <ChevronRight size={16} />
+                          </button>
+                        </div>
+                        <span className="text-base font-bold text-[#111827]">:</span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleScheduleMinuteChange(-1)}
+                            className="grid size-8 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.previousMinute')}
+                          >
+                            <ChevronLeft size={16} />
+                          </button>
+                          <span className="w-8 text-center text-base font-bold text-[#111827]">
+                            {String(scheduledMinute).padStart(DATE_PART_PAD_LENGTH, '0')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleScheduleMinuteChange(1)}
+                            className="grid size-8 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.nextMinute')}
+                          >
+                            <ChevronRight size={16} />
+                          </button>
+                        </div>
+                      </div>
+                      <p className="mt-2 text-center text-xs font-semibold text-[#F97316]">
+                        {scheduledDate} {scheduledTime}
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
                 <input
                   value={place}
                   onChange={(event) => setPlace(event.target.value)}
