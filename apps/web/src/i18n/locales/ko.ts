@@ -93,6 +93,8 @@ export const ko = {
     confirmCheck: '입력한 심부름 내용을 확인했어요.',
     budgetTitle: '예산',
     budgetHelp: '심부름꾼 수고비 + 서비스. 완료 후 결제해요.',
+    budgetAmountPlaceholder: '예산을 입력해주세요',
+    budgetNotSet: '미입력',
     submit: '심부름 등록',
     submitting: '등록 중',
     submitFailed: '심부름 등록에 실패했어요.',

@@ -10,6 +10,20 @@ const WHEN_OPTIONS = [
   { id: 'date', labelKey: 'errand.selectDate', fallback: '' },
 ] as const;
 
+type Currency = 'KRW' | 'USD' | 'JPY';
+
+const CURRENCIES: { code: Currency; symbol: string }[] = [
+  { code: 'KRW', symbol: '₩' },
+  { code: 'USD', symbol: '$' },
+  { code: 'JPY', symbol: '¥' },
+];
+
+function getDefaultCurrency(lang: string): Currency {
+  if (lang.startsWith('ko')) return 'KRW';
+  if (lang.startsWith('ja')) return 'JPY';
+  return 'USD';
+}
+
 const DATE_PART_PAD_LENGTH = 2;
 const FIRST_DAY_OF_MONTH = 1;
 const MONTH_STEP = 1;
@@ -87,7 +101,7 @@ function getCalendarCells(monthDate: Date, todayValue: string): CalendarCell[] {
 }
 
 export function ErrandNewPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const initialWhat = useMemo(() => searchParams.get('what') ?? '', [searchParams]);
@@ -102,6 +116,8 @@ export function ErrandNewPage() {
   const [areaId, setAreaId] = useState<string>(ALL_AREAS[0]?.id ?? '');
   const [where, setWhere] = useState('');
   const [detail, setDetail] = useState('');
+  const [budgetAmount, setBudgetAmount] = useState('');
+  const [budgetCurrency, setBudgetCurrency] = useState<Currency>(() => getDefaultCurrency(i18n.language));
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -156,6 +172,8 @@ export function ErrandNewPage() {
         where: where.trim(),
         detail: detail.trim() || null,
         photoUrls: [],
+        budgetAmount: budgetAmount.trim() ? Number(budgetAmount) : null,
+        budgetCurrency: budgetAmount.trim() ? budgetCurrency : null,
       });
       navigate('/my/errands', { replace: true });
     } catch (error) {
@@ -310,6 +328,38 @@ export function ErrandNewPage() {
                 placeholder={t('errand.detailPlaceholder')}
               />
             </label>
+            <div className="grid gap-2">
+              <span className="text-sm font-semibold text-[#111827]">
+                {t('errand.budgetTitle')}
+                <span className="ml-1 text-xs font-normal text-[#9CA3AF]">{t('common.optional')}</span>
+              </span>
+              <div className="flex gap-2">
+                <div className="flex shrink-0 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white">
+                  {CURRENCIES.map((c) => (
+                    <button
+                      key={c.code}
+                      type="button"
+                      onClick={() => setBudgetCurrency(c.code)}
+                      className={`px-3 py-3 text-sm font-bold ${
+                        budgetCurrency === c.code
+                          ? 'bg-[#F97316] text-white'
+                          : 'bg-white text-[#4B5563]'
+                      }`}
+                    >
+                      {c.symbol}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={budgetAmount}
+                  onChange={(event) => setBudgetAmount(event.target.value.replace(/[^0-9]/g, ''))}
+                  className="flex-1 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-base font-normal outline-none focus:border-[#F97316]"
+                  placeholder={t('errand.budgetAmountPlaceholder')}
+                />
+              </div>
+            </div>
           </>
         ) : null}
 
@@ -335,7 +385,11 @@ export function ErrandNewPage() {
             <div className="rounded-2xl bg-[#FEFCE8] px-5 py-4">
               <p className="mb-1 text-sm font-bold text-[#111827]">{t('errand.budgetTitle')}</p>
               <p className="mb-2 text-xs text-[#6B7280]">{t('errand.budgetHelp')}</p>
-              <p className="text-lg font-bold text-[#111827]">₩18,000 - 25,000</p>
+              <p className="text-lg font-bold text-[#111827]">
+                {budgetAmount.trim()
+                  ? `${CURRENCIES.find((c) => c.code === budgetCurrency)?.symbol}${Number(budgetAmount).toLocaleString()}`
+                  : t('errand.budgetNotSet')}
+              </p>
             </div>
             <label className="flex items-start gap-3 rounded-2xl border border-[#FFE4CC] bg-white px-4 py-4">
               <input

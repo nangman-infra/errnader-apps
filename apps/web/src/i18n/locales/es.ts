@@ -93,6 +93,8 @@ export const es = {
     confirmCheck: 'He revisado los detalles del mandado.',
     budgetTitle: 'Presupuesto',
     budgetHelp: 'Tarifa del errander + servicio. Paga al finalizar.',
+    budgetAmountPlaceholder: 'Ingresa tu presupuesto',
+    budgetNotSet: 'No ingresado',
     submit: 'Crear mandado',
     submitting: 'Creando',
     submitFailed: 'No se pudo crear el mandado.',

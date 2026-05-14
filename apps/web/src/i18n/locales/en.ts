@@ -93,6 +93,8 @@ export const en = {
     confirmCheck: 'I checked the errand details.',
     budgetTitle: 'Budget',
     budgetHelp: 'Errander fee + service. Pay after completion.',
+    budgetAmountPlaceholder: 'Enter your budget',
+    budgetNotSet: 'Not set',
     submit: 'Create Errand',
     submitting: 'Creating',
     submitFailed: 'Failed to create errand.',

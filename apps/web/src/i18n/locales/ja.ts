@@ -93,6 +93,8 @@ export const ja = {
     confirmCheck: '入力したおつかい内容を確認しました。',
     budgetTitle: '予算',
     budgetHelp: 'おつかい屋への手数料とサービス料金です。完了後に支払います。',
+    budgetAmountPlaceholder: '予算を入力してください',
+    budgetNotSet: '未入力',
     submit: 'おつかい登録',
     submitting: '登録中',
     submitFailed: 'おつかい登録に失敗しました。',
