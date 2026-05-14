@@ -15,6 +15,9 @@ const FIRST_DAY_OF_MONTH = 1;
 const MONTH_STEP = 1;
 const CALENDAR_COLUMNS = 7;
 const TOTAL_STEPS = 4;
+const DEFAULT_HOUR = 9;
+const HOURS_IN_DAY = 24;
+const MINUTE_OPTIONS = [0, 15, 30, 45];
 
 type FormStep = 1 | 2 | 3 | 4;
 
@@ -95,6 +98,8 @@ export function ErrandNewPage() {
   const [title, setTitle] = useState('');
   const [when, setWhen] = useState<(typeof WHEN_OPTIONS)[number]['id']>('now');
   const [selectedDate, setSelectedDate] = useState('');
+  const [selectedHour, setSelectedHour] = useState(DEFAULT_HOUR);
+  const [selectedMinute, setSelectedMinute] = useState(0);
   const [visibleMonth, setVisibleMonth] = useState(() => {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), FIRST_DAY_OF_MONTH);
@@ -115,7 +120,8 @@ export function ErrandNewPage() {
   const isPreviousMonthDisabled = visibleMonth <= currentMonthStart;
   const selectedArea = ALL_AREAS.find((area) => area.id === areaId);
   const selectedAreaName = selectedArea ? t(selectedArea.nameKey) : '';
-  const selectedWhenLabel = when === 'date' && selectedDate ? selectedDate : 'now';
+  const selectedTime = `${String(selectedHour).padStart(DATE_PART_PAD_LENGTH, '0')}:${String(selectedMinute).padStart(DATE_PART_PAD_LENGTH, '0')}`;
+  const selectedWhenLabel = when === 'date' && selectedDate ? `${selectedDate} ${selectedTime}` : 'now';
   const canMoveNext = (() => {
     if (step === 1) return title.trim().length > 0;
     if (step === 2) return when === 'now' || selectedDate.length > 0;
@@ -125,6 +131,16 @@ export function ErrandNewPage() {
 
   function moveVisibleMonth(monthOffset: number) {
     setVisibleMonth((current) => new Date(current.getFullYear(), current.getMonth() + monthOffset, FIRST_DAY_OF_MONTH));
+  }
+
+  function handleHourChange(direction: 1 | -1) {
+    setSelectedHour((h) => (h + direction + HOURS_IN_DAY) % HOURS_IN_DAY);
+  }
+
+  function handleMinuteChange(direction: 1 | -1) {
+    const currentIndex = MINUTE_OPTIONS.indexOf(selectedMinute);
+    const nextIndex = (currentIndex + direction + MINUTE_OPTIONS.length) % MINUTE_OPTIONS.length;
+    setSelectedMinute(MINUTE_OPTIONS[nextIndex]!);
   }
 
   function handleBack() {
@@ -152,7 +168,7 @@ export function ErrandNewPage() {
       await apiClient.post('/errands', {
         title: title.trim(),
         category: initialWhat || '기타',
-        when: when === 'date' ? selectedDate : 'now',
+        when: when === 'date' ? `${selectedDate} ${selectedTime}` : 'now',
         areaId,
         where: where.trim(),
         detail: detail.trim() || null,
@@ -273,7 +289,61 @@ export function ErrandNewPage() {
                     );
                   })}
                 </div>
-                {selectedDate ? <p className="mt-3 text-center text-xs font-semibold text-[#F97316]">{t('errand.selectedDate', { date: selectedDate })}</p> : null}
+                {selectedDate ? (
+                  <>
+                    <div className="mt-4 border-t border-[#FFE4CC] pt-4">
+                      <p className="mb-3 text-center text-xs font-bold text-[#9CA3AF]">{t('errand.timePicker')}</p>
+                      <div className="flex items-center justify-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleHourChange(-1)}
+                            className="grid size-9 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.previousHour')}
+                          >
+                            <ChevronLeft size={18} />
+                          </button>
+                          <span className="w-10 text-center text-xl font-bold text-[#111827]">
+                            {String(selectedHour).padStart(DATE_PART_PAD_LENGTH, '0')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleHourChange(1)}
+                            className="grid size-9 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.nextHour')}
+                          >
+                            <ChevronRight size={18} />
+                          </button>
+                        </div>
+                        <span className="text-xl font-bold text-[#111827]">:</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleMinuteChange(-1)}
+                            className="grid size-9 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.previousMinute')}
+                          >
+                            <ChevronLeft size={18} />
+                          </button>
+                          <span className="w-10 text-center text-xl font-bold text-[#111827]">
+                            {String(selectedMinute).padStart(DATE_PART_PAD_LENGTH, '0')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleMinuteChange(1)}
+                            className="grid size-9 place-items-center rounded-full bg-[#FFF7ED] text-[#F97316]"
+                            aria-label={t('errand.nextMinute')}
+                          >
+                            <ChevronRight size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="mt-3 text-center text-xs font-semibold text-[#F97316]">
+                      {t('errand.selectedDate', { date: selectedDate })} {selectedTime}
+                    </p>
+                  </>
+                ) : null}
               </div>
             ) : null}
           </fieldset>
