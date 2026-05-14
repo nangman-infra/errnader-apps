@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Camera, ChevronLeft, ChevronRight, CircleDollarSign, ImageIcon, MapPin, Navigation, Plus, X, type LucideIcon } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { QRCodeCanvas } from 'qrcode.react';
 import { apiClient } from '../api/client';
 import { useErrand } from '../api/errands';
 import { useMyProfile } from '../api/profile';
@@ -87,7 +88,7 @@ function getCalendarCells(monthDate: Date, todayValue: string): CalendarCell[] {
 const ATTACHMENT_ACTIONS: AttachmentAction[] = [
   { key: 'photo', labelKey: 'chat.attachPhoto', Icon: ImageIcon, iconClassName: 'text-[#F97316]' },
   { key: 'camera', labelKey: 'chat.attachCamera', Icon: Camera, iconClassName: 'text-[#F97316]' },
-  { key: 'transfer', labelKey: 'chat.attachTransfer', Icon: CircleDollarSign, iconClassName: 'text-[#F97316]', disabled: true },
+  { key: 'transfer', labelKey: 'chat.attachTransfer', Icon: CircleDollarSign, iconClassName: 'text-[#F97316]' },
   { key: 'map', labelKey: 'chat.attachMap', Icon: MapPin, iconClassName: 'text-[#F97316]' },
 ];
 
@@ -126,6 +127,7 @@ export function ChatRoomPage() {
   const [input, setInput] = useState('');
   const [isAttachmentPanelOpen, setIsAttachmentPanelOpen] = useState(false);
   const [isConfirmationFormOpen, setIsConfirmationFormOpen] = useState(false);
+  const [isPaymentQrOpen, setIsPaymentQrOpen] = useState(false);
   const [priceAmount, setPriceAmount] = useState('');
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledHour, setScheduledHour] = useState(DEFAULT_SCHEDULE_HOUR);
@@ -194,6 +196,10 @@ export function ChatRoomPage() {
     if (actionKey === 'map') {
       openGoogleMapsWithCurrentLocation();
     }
+    if (actionKey === 'transfer') {
+      setIsAttachmentPanelOpen(false);
+      setIsPaymentQrOpen(true);
+    }
   }
 
   function handleScheduleHourChange(direction: 1 | -1) {
@@ -230,6 +236,9 @@ export function ChatRoomPage() {
 
   return (
     <main className="flex min-h-dvh flex-col pb-0">
+      {isPaymentQrOpen ? (
+        <PaymentQrModal profile={profile} onClose={() => setIsPaymentQrOpen(false)} />
+      ) : null}
       <header className="border-b border-[#F3F4F6] px-4 py-3">
         <div className="flex min-h-10 items-center gap-1">
           <button
@@ -551,6 +560,109 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-start justify-between gap-3">
       <span className="shrink-0 text-xs text-[#9CA3AF]">{label}</span>
       <span className="min-w-0 flex-1 text-right text-xs font-semibold text-[#374151]">{value}</span>
+    </div>
+  );
+}
+
+interface PaymentMethod {
+  key: string;
+  label: string;
+  color: string;
+  qrValue?: string;
+  imageUrl?: string;
+}
+
+function PaymentQrModal({ profile, onClose }: { profile: ReturnType<typeof useMyProfile>['data']; onClose: () => void }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const methods = useMemo<PaymentMethod[]>(() => {
+    const result: PaymentMethod[] = [];
+    if (profile?.tossId) {
+      result.push({ key: 'toss', label: 'Toss', color: '#0064FF', qrValue: `https://toss.me/${profile.tossId}` });
+    }
+    if (profile?.lineId) {
+      result.push({ key: 'line', label: 'LINE', color: '#00B900', qrValue: `https://line.me/ti/p/~${profile.lineId}` });
+    }
+    if (profile?.whatsappPhone) {
+      const digits = profile.whatsappPhone.replace(/[^0-9]/g, '');
+      result.push({ key: 'whatsapp', label: 'WhatsApp', color: '#25D366', qrValue: `https://wa.me/${digits}` });
+    }
+    if (profile?.kakaopayQrUrl) {
+      result.push({ key: 'kakaopay', label: 'KakaoPay', color: '#FAE100', imageUrl: profile.kakaopayQrUrl });
+    }
+    return result;
+  }, [profile]);
+
+  const selected = methods[selectedIndex];
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-end bg-black/50" onClick={onClose}>
+      <div
+        className="w-full max-w-lg rounded-t-[28px] bg-white px-5 pb-10 pt-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-base font-bold text-[#111827]">{t('my.myPaymentQr')}</h2>
+          <button type="button" onClick={onClose} className="grid size-8 place-items-center rounded-full bg-[#F3F4F6] text-[#6B7280]">
+            <X size={16} />
+          </button>
+        </div>
+
+        {methods.length === 0 ? (
+          <div className="py-8 text-center">
+            <p className="mb-4 text-sm text-[#6B7280]">{t('my.noPaymentMethods')}</p>
+            <button
+              type="button"
+              onClick={() => { onClose(); navigate('/my/profile/edit'); }}
+              className="rounded-2xl bg-[#F97316] px-6 py-3 text-sm font-bold text-white"
+            >
+              {t('my.goToProfileEdit')}
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="mb-5 flex gap-2">
+              {methods.map((method, index) => (
+                <button
+                  key={method.key}
+                  type="button"
+                  onClick={() => setSelectedIndex(index)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-bold transition-colors ${
+                    selectedIndex === index ? 'text-white' : 'bg-[#F3F4F6] text-[#6B7280]'
+                  }`}
+                  style={selectedIndex === index ? { backgroundColor: method.color } : undefined}
+                >
+                  {method.label}
+                </button>
+              ))}
+            </div>
+
+            {selected ? (
+              <div className="flex flex-col items-center">
+                <div className="mb-4 rounded-3xl border-4 p-4" style={{ borderColor: selected.color }}>
+                  {selected.imageUrl ? (
+                    <img src={selected.imageUrl} alt={`${selected.label} QR`} className="size-52 object-contain" />
+                  ) : selected.qrValue ? (
+                    <QRCodeCanvas
+                      value={selected.qrValue}
+                      size={208}
+                      fgColor="#111827"
+                      bgColor="#FFFFFF"
+                      level="M"
+                    />
+                  ) : null}
+                </div>
+                <p className="text-sm font-semibold" style={{ color: selected.color }}>{selected.label}</p>
+                {selected.qrValue ? (
+                  <p className="mt-1 max-w-[240px] truncate text-xs text-[#9CA3AF]">{selected.qrValue}</p>
+                ) : null}
+              </div>
+            ) : null}
+          </>
+        )}
+      </div>
     </div>
   );
 }
