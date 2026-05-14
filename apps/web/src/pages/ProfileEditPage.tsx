@@ -22,6 +22,7 @@ export function ProfileEditPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [roleChangedTo, setRoleChangedTo] = useState<UserRole | null>(null);
 
   useEffect(() => {
     if (!profile) return;
@@ -52,8 +53,15 @@ export function ProfileEditPage() {
         avatarUrl: avatarUrl ?? undefined,
         areas: selectedAreas,
       });
-      await queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-      navigate('/my');
+      queryClient.setQueryData<import('../types/domain').UserProfile>(['myProfile'], (old) =>
+        old ? { ...old, name: name.trim(), role, areas: selectedAreas, avatarUrl: avatarUrl ?? old.avatarUrl } : old,
+      );
+      void queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+      if (role !== profile?.role) {
+        setRoleChangedTo(role);
+      } else {
+        navigate('/my');
+      }
     } catch {
       setErrorMessage(t('my.profileSaveFailed'));
     } finally {
@@ -101,6 +109,30 @@ export function ProfileEditPage() {
 
   return (
     <main>
+      {roleChangedTo ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-sm rounded-[24px] bg-white px-6 py-7 shadow-xl">
+            <p className="mb-2 text-center text-4xl">
+              {roleChangedTo === 'errander' ? '🛵' : '✈️'}
+            </p>
+            <h2 className="mb-2 text-center text-lg font-bold text-[#111827]">
+              {t('my.roleChangedTitle')}
+            </h2>
+            <p className="mb-6 text-center text-sm text-[#6B7280]">
+              {t('my.roleChangedMessage', {
+                role: roleChangedTo === 'errander' ? t('my.roleErrander') : t('my.roleTraveler'),
+              })}
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/my')}
+              className="w-full rounded-2xl bg-[#F97316] py-4 text-base font-bold text-white"
+            >
+              {t('my.roleChangedConfirm')}
+            </button>
+          </div>
+        </div>
+      ) : null}
       <ScreenHeader title={t('my.editProfile')} back centered border />
       <form onSubmit={handleSubmit} className="px-6 pb-8 pt-7">
         <div className="mb-9 flex justify-center">
