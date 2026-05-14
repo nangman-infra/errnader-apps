@@ -15,7 +15,6 @@ const CATEGORY_CONFIG: Record<string, { Icon: typeof Calendar; bg: string; color
 };
 
 const DEFAULT_CATEGORY = { Icon: AppWindow, bg: '#F3F4F6', color: '#6B7280' };
-const DEFAULT_ERRAND_BUDGET_LABEL = '₩18,000 - 25,000';
 
 function timeAgo(isoString: string, t: (key: string, options?: Record<string, unknown>) => string): string {
   const diffSeconds = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
@@ -70,7 +69,9 @@ export function ErrandCard({ errand, showStatus = false }: ErrandCardProps) {
         <span className="min-w-0 flex flex-1 items-center gap-1 truncate"><MapPin size={13} className="shrink-0 text-[#9CA3AF]" />{errand.where}</span>
       </div>
       {errand.detail ? <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-[#6B7280]">{errand.detail}</p> : null}
-      <p className="mt-3 text-sm font-bold text-[#F97316]">{DEFAULT_ERRAND_BUDGET_LABEL}</p>
+      {errand.budgetAmount ? (
+        <p className="mt-3 text-sm font-bold text-[#F97316]">₩{errand.budgetAmount.toLocaleString()}</p>
+      ) : null}
       {!showStatus ? (
         <div className="mt-2 flex justify-end">
           <span className="flex items-center gap-1 rounded-xl border border-[#FED7AA] bg-[#FFF7ED] px-[18px] py-2 text-[13px] font-bold text-[#F97316]">

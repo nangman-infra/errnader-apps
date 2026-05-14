@@ -32,6 +32,8 @@ export interface Errand {
   where: string;
   photoUrls: string[];
   detail: string | null;
+  budgetAmount?: number | null;
+  budgetCurrency?: 'KRW' | null;
   erranderId: string | null;
   travelerId?: string | null;
   travelerName?: string | null;
