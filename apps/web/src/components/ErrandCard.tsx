@@ -65,7 +65,13 @@ export function ErrandCard({ errand, showStatus = false }: ErrandCardProps) {
         )}
       </div>
       <div className="flex gap-4 text-[13px] text-[#6B7280]">
-        <span className="flex items-center gap-1"><Clock3 size={13} className="text-[#9CA3AF]" />{errand.when}</span>
+        {errand.when === 'now' ? (
+          <span className="flex items-center gap-1 rounded-lg bg-[#FEE2E2] px-2 py-0.5 text-xs font-bold text-[#DC2626]">
+            <Clock3 size={12} />now
+          </span>
+        ) : (
+          <span className="flex items-center gap-1"><Clock3 size={13} className="text-[#9CA3AF]" />{errand.when}</span>
+        )}
         <span className="min-w-0 flex flex-1 items-center gap-1 truncate"><MapPin size={13} className="shrink-0 text-[#9CA3AF]" />{errand.where}</span>
       </div>
       {errand.detail ? <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-[#6B7280]">{errand.detail}</p> : null}
